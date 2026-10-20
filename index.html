@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#d9534f">
+  <title>SiagaOffline - Tanggap Bencana Darurat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header & Status Sinyal -->
+  <header>
+    <div class="logo">
+      <span class="icon">🚨</span>
+      <h1>SiagaOffline</h1>
+    </div>
+    <div id="connection-status" class="status-badge online">Online</div>
+  </header>
+
+  <!-- Container Utama -->
+  <main class="container">
+
+    <!-- Lokasi & GPS Darurat -->
+    <section class="card gps-card">
+      <h2>📍 Koordinat GPS Saya</h2>
+      <p class="desc">Dapatkan koordinat Anda untuk diberikan kepada tim SAR/relawan.</p>
+      <div id="gps-display" class="gps-coords">Mendapatkan lokasi...</div>
+      <button id="btn-get-location" class="btn btn-primary">🔄 Perbarui Koordinat</button>
+      <button id="btn-share-coords" class="btn btn-secondary">📋 Salin Koordinat</button>
+    </section>
+
+    <!-- Tombol Panggil Cepat / Nomor Darurat -->
+    <section class="card">
+      <h2>📞 Nomor Darurat Nasional</h2>
+      <div class="emergency-contacts">
+        <a href="tel:112" class="contact-btn danger">
+          <span>Panggilan Darurat</span>
+          <strong>112</strong>
+        </a>
+        <a href="tel:115" class="contact-btn warning">
+          <span>BASARNAS (SAR)</span>
+          <strong>115</strong>
+        </a>
+        <a href="tel:118" class="contact-btn success">
+          <span>Ambulans</span>
+          <strong>118 / 119</strong>
+        </a>
+        <a href="tel:110" class="contact-btn info">
+          <span>Kepolisian</span>
+          <strong>110</strong>
+        </a>
+      </div>
+    </section>
+
+    <!-- Panduan Evakuasi & P3K -->
+    <section class="card">
+      <h2>📖 Panduan Evakuasi Cepat</h2>
+      <div class="accordion">
+        <details>
+          <summary>🌋 Gempa Bumi</summary>
+          <div class="content">
+            <ul>
+              <li><strong>MERUNDUK, LINDUNGI, BERPEGANGAN:</strong> Lindungi kepala dengan helm, tas, atau tangan.</li>
+              <li>Jauhi kaca, jendela, dan benda yang mudah jatuh.</li>
+              <li>Jika di luar gedung, jauhi tiang listrik, pohon, dan bangunan tinggi.</li>
+              <li>Jangan gunakan lift saat atau setelah gempa.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>🌊 Tsunami</summary>
+          <div class="content">
+            <ul>
+              <li>Jika gempa berlangsung >20 detik, segera lari ke tempat tinggi.</li>
+              <li>Jangan menunggu peringatan atau sirene resmi jika Anda di dekat pantai.</li>
+              <li>Jauhi aliran sungai yang bermuara ke laut.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>🩹 P3K: Penanganan Perdarahan</summary>
+          <div class="content">
+            <ul>
+              <li>Tekan luka langsung dengan kain bersih atau kasa steril.</li>
+              <li>Posisikan bagian yang terluka lebih tinggi dari jantung jika memungkinkan.</li>
+              <li>Tahan tekanan selama minimal 10–15 menit tanpa melepasnya.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Aplikasi Berjalan 100% Offline | SiagaOffline PWA</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
