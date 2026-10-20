@@ -2,15 +2,26 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="theme-color" content="#d9534f">
   <meta name="description" content="Aplikasi Tanggap Bencana Darurat Berbasis PWA yang dapat diakses 100% offline.">
   
+  <!-- SEO & Open Graph -->
+  <meta property="og:title" content="SiagaOffline - Tanggap Bencana Darurat">
+  <meta property="og:description" content="Panduan darurat, nomor telepon penting, dan titik koordinat GPS tanpa jaringan internet.">
+  <meta property="og:type" content="website">
+
+  <!-- Dukungan Apple iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SiagaOffline">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <title>SiagaOffline - Tanggap Bencana Darurat</title>
 
-  <!-- PWA Manifest & Apple Touch Icon -->
+  <!-- PWA Manifest & Favicon -->
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
@@ -23,7 +34,7 @@
       <span class="icon" aria-hidden="true">🚨</span>
       <h1>SiagaOffline</h1>
     </div>
-    <div id="connection-status" class="status-badge online" role="status">Online</div>
+    <span id="connection-status" class="status-badge online" role="status" aria-live="polite">Online</span>
   </header>
 
   <!-- Container Utama -->
