@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#d9534f">
+  <meta name="description" content="Aplikasi Tanggap Bencana Darurat Berbasis PWA yang dapat diakses 100% offline.">
+  
   <title>SiagaOffline - Tanggap Bencana Darurat</title>
+
+  <!-- PWA Manifest & Apple Touch Icon -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,41 +20,41 @@
   <!-- Header & Status Sinyal -->
   <header>
     <div class="logo">
-      <span class="icon">🚨</span>
+      <span class="icon" aria-hidden="true">🚨</span>
       <h1>SiagaOffline</h1>
     </div>
-    <div id="connection-status" class="status-badge online">Online</div>
+    <div id="connection-status" class="status-badge online" role="status">Online</div>
   </header>
 
   <!-- Container Utama -->
   <main class="container">
 
     <!-- Lokasi & GPS Darurat -->
-    <section class="card gps-card">
-      <h2>📍 Koordinat GPS Saya</h2>
+    <section class="card gps-card" aria-labelledby="gps-title">
+      <h2 id="gps-title">📍 Koordinat GPS Saya</h2>
       <p class="desc">Dapatkan koordinat Anda untuk diberikan kepada tim SAR/relawan.</p>
-      <div id="gps-display" class="gps-coords">Mendapatkan lokasi...</div>
-      <button id="btn-get-location" class="btn btn-primary">🔄 Perbarui Koordinat</button>
-      <button id="btn-share-coords" class="btn btn-secondary">📋 Salin Koordinat</button>
+      <div id="gps-display" class="gps-coords" aria-live="polite">Mendapatkan lokasi...</div>
+      <button id="btn-get-location" class="btn btn-primary" type="button">🔄 Perbarui Koordinat</button>
+      <button id="btn-share-coords" class="btn btn-secondary" type="button">📋 Salin Koordinat</button>
     </section>
 
     <!-- Tombol Panggil Cepat / Nomor Darurat -->
-    <section class="card">
-      <h2>📞 Nomor Darurat Nasional</h2>
+    <section class="card" aria-labelledby="contacts-title">
+      <h2 id="contacts-title">📞 Nomor Darurat Nasional</h2>
       <div class="emergency-contacts">
-        <a href="tel:112" class="contact-btn danger">
+        <a href="tel:112" class="contact-btn danger" aria-label="Panggil Panggilan Darurat 112">
           <span>Panggilan Darurat</span>
           <strong>112</strong>
         </a>
-        <a href="tel:115" class="contact-btn warning">
+        <a href="tel:115" class="contact-btn warning" aria-label="Panggil BASARNAS SAR 115">
           <span>BASARNAS (SAR)</span>
           <strong>115</strong>
         </a>
-        <a href="tel:118" class="contact-btn success">
+        <a href="tel:118" class="contact-btn success" aria-label="Panggil Ambulans 118 atau 119">
           <span>Ambulans</span>
           <strong>118 / 119</strong>
         </a>
-        <a href="tel:110" class="contact-btn info">
+        <a href="tel:110" class="contact-btn info" aria-label="Panggil Kepolisian 110">
           <span>Kepolisian</span>
           <strong>110</strong>
         </a>
@@ -54,8 +62,8 @@
     </section>
 
     <!-- Panduan Evakuasi & P3K -->
-    <section class="card">
-      <h2>📖 Panduan Evakuasi Cepat</h2>
+    <section class="card" aria-labelledby="guides-title">
+      <h2 id="guides-title">📖 Panduan Evakuasi Cepat</h2>
       <div class="accordion">
         <details>
           <summary>🌋 Gempa Bumi</summary>
@@ -73,7 +81,7 @@
           <summary>🌊 Tsunami</summary>
           <div class="content">
             <ul>
-              <li>Jika gempa berlangsung >20 detik, segera lari ke tempat tinggi.</li>
+              <li>Jika gempa berlangsung &gt; 20 detik, segera lari ke tempat tinggi.</li>
               <li>Jangan menunggu peringatan atau sirene resmi jika Anda di dekat pantai.</li>
               <li>Jauhi aliran sungai yang bermuara ke laut.</li>
             </ul>
