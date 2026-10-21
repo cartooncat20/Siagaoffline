@@ -9,9 +9,10 @@ if ('serviceWorker' in navigator) {
 
 // 1. Deteksi Status Sinyal Online / Offline
 const statusBadge = document.getElementById('connection-status');
-const statusText = statusBadge.querySelector('.status-text');
+const statusText = statusBadge ? statusBadge.querySelector('.status-text') : null;
 
 function updateOnlineStatus() {
+  if (!statusBadge || !statusText) return;
   if (navigator.onLine) {
     statusBadge.className = 'status-badge online';
     statusText.textContent = 'Online';
@@ -25,18 +26,26 @@ window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
 
-// 2. Hardware GPS Geolocation API (Perbaikan Fitur & Efek Tombol)
+// 2. Hardware GPS Geolocation API (Mode Akurasi Tinggi & Bebas Error)
 const gpsDisplay = document.getElementById('gps-display');
 const gpsTimestamp = document.getElementById('gps-timestamp');
 const btnGetLocation = document.getElementById('btn-get-location');
 const btnShareCoords = document.getElementById('btn-share-coords');
 
 function getGPSLocation() {
-  // Efek Loading pada tombol dan teks
+  if (!gpsDisplay || !btnGetLocation) return;
+
+  // Cek protokol HTTPS (Syarat wajib Geolocation browser modern)
+  if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    gpsDisplay.innerHTML = '⚠️ Geolocation membutuhkan koneksi aman (HTTPS).';
+    return;
+  }
+
+  // Tampilan awal saat memindai
   btnGetLocation.classList.add('loading');
   btnGetLocation.disabled = true;
   gpsDisplay.textContent = '🛰️ Memindai satelit GPS...';
-  gpsTimestamp.textContent = '';
+  if (gpsTimestamp) gpsTimestamp.textContent = '';
 
   if (!('geolocation' in navigator)) {
     gpsDisplay.textContent = '❌ Fitur GPS tidak didukung di perangkat ini.';
@@ -45,70 +54,104 @@ function getGPSLocation() {
     return;
   }
 
+  // Pengaturan opsi Geolocation untuk akurasi optimal & bebas error
+  const optionsHighAccuracy = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 3000
+  };
+
+  const optionsFallback = {
+    enableHighAccuracy: false,
+    timeout: 15000,
+    maximumAge: 10000
+  };
+
+  // Fungsi penanganan saat koordinat berhasil didapatkan
+  function onSuccess(position) {
+    const lat = position.coords.latitude.toFixed(6);
+    const lon = position.coords.longitude.toFixed(6);
+    const acc = Math.round(position.coords.accuracy);
+    const time = new Date().toLocaleTimeString('id-ID');
+
+    gpsDisplay.textContent = `${lat}, ${lon} (±${acc}m)`;
+    if (gpsTimestamp) gpsTimestamp.textContent = `⏱️ Diperbarui pukul: ${time}`;
+
+    btnGetLocation.classList.remove('loading');
+    btnGetLocation.disabled = false;
+  }
+
+  // Attempt 1: Coba dengan Hardware GPS Akurasi Tinggi
   navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = position.coords.latitude.toFixed(6);
-      const lon = position.coords.longitude.toFixed(6);
-      const acc = Math.round(position.coords.accuracy);
-      const time = new Date().toLocaleTimeString('id-ID');
-
-      gpsDisplay.textContent = `${lat}, ${lon} (±${acc}m)`;
-      gpsTimestamp.textContent = `⏱️ Diperbarui pukul: ${time}`;
-
-      // Reset tombol
-      btnGetLocation.classList.remove('loading');
-      btnGetLocation.disabled = false;
-    },
+    onSuccess,
     (error) => {
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          gpsDisplay.textContent = '⚠️ Akses lokasi ditolak. Harap izinkan lokasi di HP Anda.';
-          break;
-        case error.POSITION_UNAVAILABLE:
-          gpsDisplay.textContent = '⚠️ Sinyal GPS tidak ditemukan.';
-          break;
-        case error.TIMEOUT:
-          gpsDisplay.textContent = '⚠️ Waktu pencarian GPS habis.';
-          break;
-        default:
-          gpsDisplay.textContent = '⚠️ Gagal mendapatkan koordinat GPS.';
+      // Attempt 2: Jika akurasi tinggi gagal/timeout, coba fallback ke sinyal seluler/Wi-Fi
+      if (error.code === error.TIMEOUT || error.code === error.POSITION_UNAVAILABLE) {
+        navigator.geolocation.getCurrentPosition(
+          onSuccess,
+          (fallbackError) => {
+            handleGPSError(fallbackError);
+          },
+          optionsFallback
+        );
+      } else {
+        handleGPSError(error);
       }
-      
-      btnGetLocation.classList.remove('loading');
-      btnGetLocation.disabled = false;
     },
-    {
-      enableHighAccuracy: true, // Memaksa modul hardware GPS aktif
-      timeout: 15000,
-      maximumAge: 0 // Mencegah penggunaan data cache lokasi lama
-    }
+    optionsHighAccuracy
   );
 }
 
-btnGetLocation.addEventListener('click', getGPSLocation);
-getGPSLocation(); // Dapatkan GPS awal saat dibuka
+// Penanganan pesan kesalahan GPS yang komunikatif
+function handleGPSError(error) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      gpsDisplay.innerHTML = '⚠️ Akses ditolak. Harap izinkan <b>Lokasi/GPS</b> pada pengaturan browser HP Anda.';
+      break;
+    case error.POSITION_UNAVAILABLE:
+      gpsDisplay.textContent = '⚠️ Sinyal GPS lemah. Coba berpindah ke area terbuka.';
+      break;
+    case error.TIMEOUT:
+      gpsDisplay.textContent = '⚠️ Waktu pencarian GPS habis. Silakan klik "Perbarui GPS".';
+      break;
+    default:
+      gpsDisplay.textContent = '⚠️ Tidak dapat membaca lokasi. Aktifkan fitur Lokasi HP Anda.';
+  }
+
+  btnGetLocation.classList.remove('loading');
+  btnGetLocation.disabled = false;
+}
+
+if (btnGetLocation) {
+  btnGetLocation.addEventListener('click', getGPSLocation);
+}
+
+// Jalankan otomatis saat halaman dimuat
+window.addEventListener('DOMContentLoaded', getGPSLocation);
 
 // 3. Salin Koordinat GPS
-btnShareCoords.addEventListener('click', () => {
-  const textToCopy = gpsDisplay.textContent;
+if (btnShareCoords) {
+  btnShareCoords.addEventListener('click', () => {
+    const textToCopy = gpsDisplay ? gpsDisplay.textContent : '';
 
-  if (textToCopy && !textToCopy.includes('Memindai') && !textToCopy.includes('⚠️') && !textToCopy.includes('❌')) {
-    navigator.clipboard.writeText(textToCopy)
-      .then(() => {
-        const btnText = btnShareCoords.querySelector('.btn-text');
-        const originalText = btnText.textContent;
-        btnText.textContent = 'Tersalin!';
-        btnShareCoords.style.background = '#10b981';
-        btnShareCoords.style.color = '#ffffff';
+    if (textToCopy && !textToCopy.includes('Memindai') && !textToCopy.includes('⚠️') && !textToCopy.includes('❌')) {
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          const btnText = btnShareCoords.querySelector('.btn-text');
+          const originalText = btnText ? btnText.textContent : 'Salin Koordinat';
+          if (btnText) btnText.textContent = 'Tersalin!';
+          btnShareCoords.style.background = '#10b981';
+          btnShareCoords.style.color = '#ffffff';
 
-        setTimeout(() => {
-          btnText.textContent = originalText;
-          btnShareCoords.style.background = '';
-          btnShareCoords.style.color = '';
-        }, 2000);
-      })
-      .catch(() => alert('Gagal menyalin teks.'));
+          setTimeout(() => {
+            if (btnText) btnText.textContent = originalText;
+            btnShareCoords.style.background = '';
+            btnShareCoords.style.color = '';
+          }, 2000);
+        })
+        .catch(() => alert('Gagal menyalin teks.'));
   } else {
     alert('Koordinat GPS belum siap untuk disalin.');
   }
 });
+}
