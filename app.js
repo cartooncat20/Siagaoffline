@@ -37,17 +37,14 @@ loginForm.addEventListener('submit', (e) => {
 
 // 2. Logika Login Platform Pihak Ketiga (Google, Facebook, Apple)
 document.getElementById('btn-login-google').addEventListener('click', () => {
-  // Dalam lingkungan produksi, hubungkan dengan SDK Firebase Auth Google
   handleSuccessfulLogin("Pengguna Google");
 });
 
 document.getElementById('btn-login-facebook').addEventListener('click', () => {
-  // Dalam lingkungan produksi, hubungkan dengan SDK Facebook Login
   handleSuccessfulLogin("Pengguna Facebook");
 });
 
 document.getElementById('btn-login-apple').addEventListener('click', () => {
-  // Dalam lingkungan produksi, hubungkan dengan SDK Apple Sign-In
   handleSuccessfulLogin("Pengguna Apple / iPhone");
 });
 
