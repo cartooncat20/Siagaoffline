@@ -6,15 +6,6 @@
   <meta name="theme-color" content="#dc2626">
   <meta name="description" content="Aplikasi Tanggap Bencana Darurat Berbasis PWA yang dapat diakses 100% offline.">
   
-  <meta property="og:title" content="SiagaOffline - Tanggap Bencana Darurat">
-  <meta property="og:description" content="Panduan darurat, nomor telepon penting, dan titik koordinat GPS tanpa jaringan internet.">
-  <meta property="og:type" content="website">
-
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="SiagaOffline">
-  <link rel="apple-touch-icon" href="icon-192.png">
-
   <title>SiagaOffline - Tanggap Bencana Darurat</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,174 +14,241 @@
 
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="locked">
 
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <div class="icon-wrapper">🚨</div>
-      <div>
-        <h1>SiagaOffline</h1>
-        <p class="subtitle">Tanggap Bencana PWA</p>
-      </div>
-    </div>
-    <div id="connection-status" class="status-badge online" role="status" aria-live="polite">
-      <span class="status-dot"></span>
-      <span class="status-text">Online</span>
-    </div>
-  </header>
-
-  <!-- Container Utama -->
-  <main class="container">
-
-    <!-- Lokasi & GPS Darurat -->
-    <section class="card gps-card" aria-labelledby="gps-title">
-      <div class="card-header">
-        <span class="card-icon">📍</span>
-        <h2 id="gps-title">Koordinat GPS Saya</h2>
-      </div>
-      <p class="desc">Dapatkan koordinat Anda untuk diberikan kepada tim SAR/relawan saat darurat.</p>
-      
-      <div class="gps-box">
-        <div id="gps-display" class="gps-coords" aria-live="polite">Mendapatkan lokasi...</div>
-        <div id="gps-timestamp" class="gps-time"></div>
+  <!-- Modal / Overlay Login Akun -->
+  <div id="login-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="icon-wrapper">🔐</div>
+        <h2>Akses Terkunci</h2>
+        <p class="modal-desc">Masuk untuk mengakses sistem SiagaOffline.</p>
       </div>
 
-      <div class="button-group">
-        <button id="btn-get-location" class="btn btn-primary" type="button">
-          <span class="btn-icon">🔄</span> <span class="btn-text">Perbarui GPS</span>
+      <!-- Form Login Manual -->
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Masukkan username" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Masukkan password" required>
+        </div>
+        <div id="login-error" class="error-message">❌ Akun tidak sesuai! Website diblokir demi keamanan.</div>
+        <button type="submit" id="btn-login" class="btn btn-primary full-width">Masuk Sistem</button>
+      </form>
+
+      <div class="divider">
+        <span>Atau masuk dengan</span>
+      </div>
+
+      <!-- Opsi Login Platform Media Sosial -->
+      <div class="social-login-group">
+        <button type="button" id="btn-login-google" class="btn-social google">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          Google
         </button>
-        <button id="btn-share-coords" class="btn btn-secondary" type="button">
-          <span class="btn-icon">📋</span> <span class="btn-text">Salin Koordinat</span>
+
+        <button type="button" id="btn-login-facebook" class="btn-social facebook">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+
+        <button type="button" id="btn-login-apple" class="btn-social apple">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.13c.64-.78 1.08-1.86.96-2.94-.93.04-2.07.62-2.74 1.4-.59.68-1.11 1.78-.97 2.84 1.04.08 2.11-.52 2.75-1.3z"/></svg>
+          Apple / iPhone
         </button>
       </div>
-    </section>
 
-    <!-- Nomor Darurat -->
-    <section class="card" aria-labelledby="contacts-title">
-      <div class="card-header">
-        <span class="card-icon">📞</span>
-        <h2 id="contacts-title">Nomor Darurat Nasional</h2>
+      <p class="demo-hint">Demo Kredensial Manual: Username: <b>siaga</b> | Password: <b>123456</b></p>
+    </div>
+  </div>
+
+  <!-- Modal / Overlay Pendaftaran Alamat -->
+  <div id="address-overlay" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="icon-wrapper">🏠</div>
+        <h2>Alamat Lokasi Anda</h2>
+        <p class="modal-desc">Berikan alamat detail Anda untuk memudahkan verifikasi area bencana & penentuan GPS.</p>
       </div>
-      <p class="desc">Klik pada kartu nomor untuk langsung melakukan panggilan cepat.</p>
-      
-      <div class="emergency-contacts">
-        <a href="tel:112" class="contact-btn danger" aria-label="Panggil Panggilan Darurat 112">
-          <div class="contact-icon">🆘</div>
-          <div class="contact-info">
-            <span>Panggilan Darurat</span>
-            <strong>112</strong>
-          </div>
-        </a>
-        <a href="tel:113" class="contact-btn fire" aria-label="Panggil Pemadam Kebakaran 113">
-          <div class="contact-icon">👨‍🚒</div>
-          <div class="contact-info">
-            <span>Pemadam Kebakaran</span>
-            <strong>113</strong>
-          </div>
-        </a>
-        <a href="tel:115" class="contact-btn warning" aria-label="Panggil BASARNAS SAR 115">
-          <div class="contact-icon">🚁</div>
-          <div class="contact-info">
-            <span>BASARNAS (SAR)</span>
-            <strong>115</strong>
-          </div>
-        </a>
-        <a href="tel:118" class="contact-btn success" aria-label="Panggil Ambulans 118 atau 119">
-          <div class="contact-icon">🚑</div>
-          <div class="contact-info">
-            <span>Ambulans</span>
-            <strong>118 / 119</strong>
-          </div>
-        </a>
-        <a href="tel:110" class="contact-btn info" aria-label="Panggil Kepolisian 110">
-          <div class="contact-icon">🚔</div>
-          <div class="contact-info">
-            <span>Kepolisian</span>
-            <strong>110</strong>
-          </div>
-        </a>
+
+      <form id="address-form">
+        <div class="form-group">
+          <label for="user-address">Alamat Lengkap / Keterangan Patokan</label>
+          <textarea id="user-address" rows="3" placeholder="Contoh: Jl. Raya Mawar No. 12, RT 02/05, Desa Sukamaju (Dekat Lapangan)" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary full-width">Simpan & Lanjutkan GPS</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Konten Utama (Tersembunyi Hingga Login) -->
+  <div id="main-content" class="protected-content hidden">
+    <header>
+      <div class="logo">
+        <div class="icon-wrapper">🚨</div>
+        <div>
+          <h1>SiagaOffline</h1>
+          <p class="subtitle">Tanggap Bencana PWA</p>
+        </div>
       </div>
-    </section>
-
-    <!-- Panduan Evakuasi -->
-    <section class="card" aria-labelledby="guides-title">
-      <div class="card-header">
-        <span class="card-icon">📖</span>
-        <h2 id="guides-title">Panduan Evakuasi Cepat</h2>
+      <div class="header-right">
+        <div id="connection-status" class="status-badge online" role="status">
+          <span class="status-dot"></span>
+          <span class="status-text">Online</span>
+        </div>
+        <button id="btn-logout" class="btn-logout" title="Keluar">Keluar 🚪</button>
       </div>
-      
-      <div class="accordion">
-        <details>
-          <summary>
-            <span class="summary-title">🌋 Gempa Bumi</span>
-            <span class="chevron">❯</span>
-          </summary>
-          <div class="content">
-            <ul>
-              <li><strong>MERUNDUK, LINDUNGI, BERPEGANGAN:</strong> Lindungi kepala dengan helm, tas, atau tangan.</li>
-              <li>Jauhi kaca, jendela, dan benda yang mudah jatuh.</li>
-              <li>Jika di luar gedung, jauhi tiang listrik, pohon, dan bangunan tinggi.</li>
-              <li>Jangan gunakan lift saat atau setelah gempa.</li>
-            </ul>
-          </div>
-        </details>
+    </header>
 
-        <details>
-          <summary>
-            <span class="summary-title">🔥 Kebakaran</span>
-            <span class="chevron">❯</span>
-          </summary>
-          <div class="content">
-            <ul>
-              <li><strong>MERANGKAK DI BAWAH ASAP:</strong> Merangkak rendah untuk mendapat udara bersih.</li>
-              <li>Tutup hidung dan mulut menggunakan kain basah.</li>
-              <li>Raba pintu sebelum memegang gagang; jika panas, jangan dibuka.</li>
-              <li>Jika pakaian terbakar: <strong>BERHENTI, JATUHKAN DIRI, BERGULING</strong>.</li>
-              <li>Segera keluar gedung menuju titik kumpul dan hubungi <strong>113</strong>.</li>
-            </ul>
-          </div>
-        </details>
+    <main class="container">
+      <!-- Informasi Alamat & Lokasi GPS Darurat -->
+      <section class="card gps-card">
+        <div class="card-header">
+          <span class="card-icon">📍</span>
+          <h2>Lokasi & GPS Saya</h2>
+        </div>
+        <p class="desc">Gunakan informasi ini untuk dibagikan kepada tim SAR/relawan penanggulangan bencana.</p>
 
-        <details>
-          <summary>
-            <span class="summary-title">🌊 Tsunami</span>
-            <span class="chevron">❯</span>
-          </summary>
-          <div class="content">
-            <ul>
-              <li>Jika gempa berlangsung &gt; 20 detik, segera lari ke tempat tinggi.</li>
-              <li>Jangan menunggu peringatan atau sirene resmi jika Anda di dekat pantai.</li>
-              <li>Jauhi aliran sungai yang bermuara ke laut.</li>
-            </ul>
-          </div>
-        </details>
+        <div class="address-box">
+          <div class="address-title">🏠 Alamat Terdaftar:</div>
+          <div id="display-address" class="address-text">Belum ada alamat...</div>
+        </div>
+        
+        <div class="gps-box">
+          <div id="gps-display" class="gps-coords">Mendapatkan lokasi...</div>
+          <div id="gps-timestamp" class="gps-time"></div>
+        </div>
 
-        <details>
-          <summary>
-            <span class="summary-title">🩹 P3K: Penanganan Perdarahan & Luka Bakar</span>
-            <span class="chevron">❯</span>
-          </summary>
-          <div class="content">
-            <ul>
-              <li><strong>Perdarahan:</strong> Tekan luka langsung dengan kain bersih/kasa steril 10–15 menit.</li>
-              <li><strong>Luka Bakar:</strong> Guyur air mengalir biasa selama 10–20 menit.</li>
-              <li>Jangan mengoleskan pasta gigi, mentega, atau minyak pada luka bakar.</li>
-            </ul>
-          </div>
-        </details>
-      </div>
-    </section>
+        <div class="button-group">
+          <button id="btn-get-location" class="btn btn-primary" type="button">
+            <span class="btn-icon">🔄</span> <span class="btn-text">Perbarui GPS</span>
+          </button>
+          <button id="btn-share-coords" class="btn btn-secondary" type="button">
+            <span class="btn-icon">📋</span> <span class="btn-text">Salin Data Lokasi</span>
+          </button>
+        </div>
+      </section>
 
-  </main>
+      <!-- Feed Berita & Media Terupdate -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">📰</span>
+          <h2>Update Kejadian Bencana & Video</h2>
+        </div>
+        <p class="desc">Informasi visual, foto, dan tayangan video bencana alam terkini.</p>
 
-  <footer>
-    <div class="footer-badge">⚡ PWA Ready</div>
-    <p>Aplikasi Berjalan 100% Offline | SiagaOffline</p>
-  </footer>
+        <div class="news-feed">
+          <article class="news-card">
+            <div class="media-container">
+              <iframe width="100%" height="210" src="https://www.youtube.com/embed/5qap5aO4i9A" title="Peringatan Dini Bencana" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="news-content">
+              <span class="news-tag danger">Video Utama</span>
+              <h3 class="news-title-text">Panduan & Edukasi Simulasi Tsunami dan Evakuasi Mandiri</h3>
+              <p class="news-date">📅 21 Oktober 2026 | Tim Siaga Bencana</p>
+              <p class="news-excerpt">Video rekaman dan panduan mitigasi evakuasi darurat bagi warga pesisir pantai dalam menghadapi potensi gelombang tinggi.</p>
+            </div>
+          </article>
+
+          <article class="news-card">
+            <div class="media-container">
+              <img src="https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80" alt="Banjir Kiriman" class="news-image" loading="lazy">
+            </div>
+            <div class="news-content">
+              <span class="news-tag warning">Update Foto</span>
+              <h3 class="news-title-text">Peringatan Debit Air Naik di Area Bantaran Sungai</h3>
+              <p class="news-date">📅 Hari Ini | Posko Utama</p>
+              <p class="news-excerpt">Debit air hujan terpantau meningkat pesat. Dihimbau bagi warga di wilayah pinggiran sungai untuk segera mengamankan barang berharga.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Nomor Darurat -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">📞</span>
+          <h2>Nomor Darurat Nasional</h2>
+        </div>
+        <p class="desc">Klik pada kartu nomor untuk langsung melakukan panggilan cepat.</p>
+        
+        <div class="emergency-contacts">
+          <a href="tel:112" class="contact-btn danger">
+            <div class="contact-icon">🆘</div>
+            <div class="contact-info"><span>Panggilan Darurat</span><strong>112</strong></div>
+          </a>
+          <a href="tel:113" class="contact-btn fire">
+            <div class="contact-icon">👨‍🚒</div>
+            <div class="contact-info"><span>Pemadam Kebakaran</span><strong>113</strong></div>
+          </a>
+          <a href="tel:115" class="contact-btn warning">
+            <div class="contact-icon">🚁</div>
+            <div class="contact-info"><span>BASARNAS (SAR)</span><strong>115</strong></div>
+          </a>
+          <a href="tel:118" class="contact-btn success">
+            <div class="contact-icon">🚑</div>
+            <div class="contact-info"><span>Ambulans</span><strong>118 / 119</strong></div>
+          </a>
+          <a href="tel:110" class="contact-btn info">
+            <div class="contact-icon">🚔</div>
+            <div class="contact-info"><span>Kepolisian</span><strong>110</strong></div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Panduan Evakuasi -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">📖</span>
+          <h2>Panduan Evakuasi Cepat</h2>
+        </div>
+        
+        <div class="accordion">
+          <details>
+            <summary><span class="summary-title">🌋 Gempa Bumi</span><span class="chevron">❯</span></summary>
+            <div class="content">
+              <ul>
+                <li><strong>MERUNDUK, LINDUNGI, BERPEGANGAN:</strong> Lindungi kepala dengan helm, tas, atau tangan.</li>
+                <li>Jauhi kaca, jendela, dan benda yang mudah jatuh.</li>
+                <li>Jika di luar gedung, jauhi tiang listrik, pohon, dan bangunan tinggi.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="summary-title">🔥 Kebakaran</span><span class="chevron">❯</span></summary>
+            <div class="content">
+              <ul>
+                <li><strong>MERANGKAK DI BAWAH ASAP:</strong> Merangkak rendah untuk mendapat udara bersih.</li>
+                <li>Tutup hidung dan mulut menggunakan kain basah.</li>
+                <li>Segera keluar gedung menuju titik kumpul dan hubungi <strong>113</strong>.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="summary-title">🌊 Tsunami</span><span class="chevron">❯</span></summary>
+            <div class="content">
+              <ul>
+                <li>Jika gempa berlangsung &gt; 20 detik, segera lari ke tempat tinggi.</li>
+                <li>Jangan menunggu peringatan atau sirene resmi jika Anda di dekat pantai.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-badge">⚡ PWA Ready</div>
+      <p>Aplikasi Berjalan 100% Offline | SiagaOffline</p>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>
