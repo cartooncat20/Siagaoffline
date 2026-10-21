@@ -19,7 +19,7 @@
 
   <title>SiagaOffline - Tanggap Bencana Darurat</title>
 
-  <!-- Google Font: Plus Jakarta Sans & JetBrains Mono -->
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -61,14 +61,15 @@
       
       <div class="gps-box">
         <div id="gps-display" class="gps-coords" aria-live="polite">Mendapatkan lokasi...</div>
+        <div id="gps-timestamp" class="gps-time"></div>
       </div>
 
       <div class="button-group">
         <button id="btn-get-location" class="btn btn-primary" type="button">
-          <span>🔄</span> Perbarui GPS
+          <span class="btn-icon">🔄</span> <span class="btn-text">Perbarui GPS</span>
         </button>
         <button id="btn-share-coords" class="btn btn-secondary" type="button">
-          <span>📋</span> Salin Koordinat
+          <span class="btn-icon">📋</span> <span class="btn-text">Salin Koordinat</span>
         </button>
       </div>
     </section>
@@ -87,6 +88,13 @@
           <div class="contact-info">
             <span>Panggilan Darurat</span>
             <strong>112</strong>
+          </div>
+        </a>
+        <a href="tel:113" class="contact-btn fire" aria-label="Panggil Pemadam Kebakaran 113">
+          <div class="contact-icon">👨‍🚒</div>
+          <div class="contact-info">
+            <span>Pemadam Kebakaran</span>
+            <strong>113</strong>
           </div>
         </a>
         <a href="tel:115" class="contact-btn warning" aria-label="Panggil BASARNAS SAR 115">
@@ -138,6 +146,22 @@
 
         <details>
           <summary>
+            <span class="summary-title">🔥 Kebakaran</span>
+            <span class="chevron">❯</span>
+          </summary>
+          <div class="content">
+            <ul>
+              <li><strong>MERANGKAK DI BAWAH ASAP:</strong> Asap beracun naik ke atas, merangkaklah rendah untuk mendapat udara bersih.</li>
+              <li>Tutup hidung dan mulut menggunakan kain basah.</li>
+              <li>Raba pintu sebelum memegang gagang pintu; jika terasa panas, jangan dibuka.</li>
+              <li>Jika pakaian terbakar: <strong>BERHENTI, JATUHKAN DIRI, BERGULING</strong> hingga api padam.</li>
+              <li>Segera keluar gedung menuju titik kumpul dan hubungi <strong>113</strong>.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>
             <span class="summary-title">🌊 Tsunami</span>
             <span class="chevron">❯</span>
           </summary>
@@ -152,14 +176,14 @@
 
         <details>
           <summary>
-            <span class="summary-title">🩹 P3K: Penanganan Perdarahan</span>
+            <span class="summary-title">🩹 P3K: Penanganan Perdarahan & Luka Bakar</span>
             <span class="chevron">❯</span>
           </summary>
           <div class="content">
             <ul>
-              <li>Tekan luka langsung dengan kain bersih atau kasa steril.</li>
-              <li>Posisikan bagian yang terluka lebih tinggi dari jantung jika memungkinkan.</li>
-              <li>Tahan tekanan selama minimal 10–15 menit tanpa melepasnya.</li>
+              <li><strong>Perdarahan:</strong> Tekan luka langsung dengan kain bersih/kasa steril. Tahan tekanan 10–15 menit.</li>
+              <li><strong>Luka Bakar:</strong> Guyur dengan air mengalir biasa (bukan air es) selama 10–20 menit.</li>
+              <li>Jangan mengoleskan pasta gigi, mentega, atau minyak pada luka bakar.</li>
             </ul>
           </div>
         </details>
