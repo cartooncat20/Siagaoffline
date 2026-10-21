@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#d9534f">
+  <meta name="theme-color" content="#dc2626">
   <meta name="description" content="Aplikasi Tanggap Bencana Darurat Berbasis PWA yang dapat diakses 100% offline.">
   
   <!-- SEO & Open Graph -->
@@ -19,6 +19,11 @@
 
   <title>SiagaOffline - Tanggap Bencana Darurat</title>
 
+  <!-- Google Font: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- PWA Manifest & Favicon -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -31,10 +36,16 @@
   <!-- Header & Status Sinyal -->
   <header>
     <div class="logo">
-      <span class="icon" aria-hidden="true">🚨</span>
-      <h1>SiagaOffline</h1>
+      <div class="icon-wrapper">🚨</div>
+      <div>
+        <h1>SiagaOffline</h1>
+        <p class="subtitle">Tanggap Bencana PWA</p>
+      </div>
     </div>
-    <span id="connection-status" class="status-badge online" role="status" aria-live="polite">Online</span>
+    <div id="connection-status" class="status-badge online" role="status" aria-live="polite">
+      <span class="status-dot"></span>
+      <span class="status-text">Online</span>
+    </div>
   </header>
 
   <!-- Container Utama -->
@@ -42,42 +53,79 @@
 
     <!-- Lokasi & GPS Darurat -->
     <section class="card gps-card" aria-labelledby="gps-title">
-      <h2 id="gps-title">📍 Koordinat GPS Saya</h2>
-      <p class="desc">Dapatkan koordinat Anda untuk diberikan kepada tim SAR/relawan.</p>
-      <div id="gps-display" class="gps-coords" aria-live="polite">Mendapatkan lokasi...</div>
-      <button id="btn-get-location" class="btn btn-primary" type="button">🔄 Perbarui Koordinat</button>
-      <button id="btn-share-coords" class="btn btn-secondary" type="button">📋 Salin Koordinat</button>
+      <div class="card-header">
+        <span class="card-icon">📍</span>
+        <h2 id="gps-title">Koordinat GPS Saya</h2>
+      </div>
+      <p class="desc">Dapatkan koordinat Anda untuk diberikan kepada tim SAR/relawan saat darurat.</p>
+      
+      <div class="gps-box">
+        <div id="gps-display" class="gps-coords" aria-live="polite">Mendapatkan lokasi...</div>
+      </div>
+
+      <div class="button-group">
+        <button id="btn-get-location" class="btn btn-primary" type="button">
+          <span>🔄</span> Perbarui GPS
+        </button>
+        <button id="btn-share-coords" class="btn btn-secondary" type="button">
+          <span>📋</span> Salin Koordinat
+        </button>
+      </div>
     </section>
 
     <!-- Tombol Panggil Cepat / Nomor Darurat -->
     <section class="card" aria-labelledby="contacts-title">
-      <h2 id="contacts-title">📞 Nomor Darurat Nasional</h2>
+      <div class="card-header">
+        <span class="card-icon">📞</span>
+        <h2 id="contacts-title">Nomor Darurat Nasional</h2>
+      </div>
+      <p class="desc">Klik pada kartu nomor untuk langsung melakukan panggilan cepat.</p>
+      
       <div class="emergency-contacts">
         <a href="tel:112" class="contact-btn danger" aria-label="Panggil Panggilan Darurat 112">
-          <span>Panggilan Darurat</span>
-          <strong>112</strong>
+          <div class="contact-icon">🆘</div>
+          <div class="contact-info">
+            <span>Panggilan Darurat</span>
+            <strong>112</strong>
+          </div>
         </a>
         <a href="tel:115" class="contact-btn warning" aria-label="Panggil BASARNAS SAR 115">
-          <span>BASARNAS (SAR)</span>
-          <strong>115</strong>
+          <div class="contact-icon">🚁</div>
+          <div class="contact-info">
+            <span>BASARNAS (SAR)</span>
+            <strong>115</strong>
+          </div>
         </a>
         <a href="tel:118" class="contact-btn success" aria-label="Panggil Ambulans 118 atau 119">
-          <span>Ambulans</span>
-          <strong>118 / 119</strong>
+          <div class="contact-icon">🚑</div>
+          <div class="contact-info">
+            <span>Ambulans</span>
+            <strong>118 / 119</strong>
+          </div>
         </a>
         <a href="tel:110" class="contact-btn info" aria-label="Panggil Kepolisian 110">
-          <span>Kepolisian</span>
-          <strong>110</strong>
+          <div class="contact-icon">🚔</div>
+          <div class="contact-info">
+            <span>Kepolisian</span>
+            <strong>110</strong>
+          </div>
         </a>
       </div>
     </section>
 
     <!-- Panduan Evakuasi & P3K -->
     <section class="card" aria-labelledby="guides-title">
-      <h2 id="guides-title">📖 Panduan Evakuasi Cepat</h2>
+      <div class="card-header">
+        <span class="card-icon">📖</span>
+        <h2 id="guides-title">Panduan Evakuasi Cepat</h2>
+      </div>
+      
       <div class="accordion">
         <details>
-          <summary>🌋 Gempa Bumi</summary>
+          <summary>
+            <span class="summary-title">🌋 Gempa Bumi</span>
+            <span class="chevron">❯</span>
+          </summary>
           <div class="content">
             <ul>
               <li><strong>MERUNDUK, LINDUNGI, BERPEGANGAN:</strong> Lindungi kepala dengan helm, tas, atau tangan.</li>
@@ -89,7 +137,10 @@
         </details>
 
         <details>
-          <summary>🌊 Tsunami</summary>
+          <summary>
+            <span class="summary-title">🌊 Tsunami</span>
+            <span class="chevron">❯</span>
+          </summary>
           <div class="content">
             <ul>
               <li>Jika gempa berlangsung &gt; 20 detik, segera lari ke tempat tinggi.</li>
@@ -100,7 +151,10 @@
         </details>
 
         <details>
-          <summary>🩹 P3K: Penanganan Perdarahan</summary>
+          <summary>
+            <span class="summary-title">🩹 P3K: Penanganan Perdarahan</span>
+            <span class="chevron">❯</span>
+          </summary>
           <div class="content">
             <ul>
               <li>Tekan luka langsung dengan kain bersih atau kasa steril.</li>
@@ -115,7 +169,8 @@
   </main>
 
   <footer>
-    <p>Aplikasi Berjalan 100% Offline | SiagaOffline PWA</p>
+    <div class="footer-badge">⚡ PWA Ready</div>
+    <p>Aplikasi Berjalan 100% Offline | SiagaOffline</p>
   </footer>
 
   <script src="app.js"></script>
